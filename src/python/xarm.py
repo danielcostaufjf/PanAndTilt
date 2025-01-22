@@ -34,7 +34,7 @@ PAN_FOV = 120       # Campo de visão horizontal em graus
 TILT_FOV = 60       # Campo de visão vertical em graus
 
 
-def pixels_to_angle(pixels, max_pixels, fov, min_angle, max_angle):
+def pixels_to_angle(pixels, max_pixels, fov):
     """Converte um número de pixels em ângulos respeitando os limites."""
     angle = (pixels / max_pixels) * fov
     return -angle
@@ -118,35 +118,27 @@ def main():
     set_servo_angle(PAN_SERVO_ID, PAN_STANDBY_ANGLE, 5)
     set_servo_angle(TILT_SERVO_ID, TILT_STANDBY_ANGLE, 5)
     try:
+        pan_angle = pixels_to_angle(deltaX, PAN_PIXELS, PAN_FOV)
+        tilt_angle = pixels_to_angle(deltaY, TILT_PIXELS, TILT_FOV)
+        print(pan_angle)
+        print(tilt_angle)
+        pan_angle = -pan_angle + PAN_STANDBY_ANGLE
+        tilt_angle = tilt_angle + TILT_STANDBY_ANGLE
+        pan_angle = max(PAN_MIN_ANGLE, min(PAN_MAX_ANGLE, pan_angle))
+        tilt_angle = max(TILT_MIN_ANGLE, min(TILT_MAX_ANGLE, tilt_angle))
+        print(pan_angle)
+        print(tilt_angle)
 
-            # Ajusta os motores para os ângulos recebidos
-            # Garantir que os ângulos estejam dentro dos limites definidos
-            #pan_angle = max(PAN_MIN_ANGLE, min(PAN_MAX_ANGLE, pan_angle))
-            #tilt_angle = max(TILT_MIN_ANGLE, min(TILT_MAX_ANGLE, tilt_angle))
-            # Converter pixels para ângulos
-            #pan_angle = deltaX * (-0.0553) + 1.73
-
-            pan_angle = pixels_to_angle(deltaX, PAN_PIXELS, PAN_FOV, PAN_MIN_ANGLE, PAN_MAX_ANGLE)
-            tilt_angle = pixels_to_angle(deltaY, TILT_PIXELS, TILT_FOV, TILT_MIN_ANGLE, TILT_MAX_ANGLE)
-            print(pan_angle)
-            print(tilt_angle)
-            pan_angle = -pan_angle + PAN_STANDBY_ANGLE
-            tilt_angle = tilt_angle + TILT_STANDBY_ANGLE
-            pan_angle = max(PAN_MIN_ANGLE, min(PAN_MAX_ANGLE, pan_angle))
-            tilt_angle = max(TILT_MIN_ANGLE, min(TILT_MAX_ANGLE, tilt_angle))
-            print(pan_angle)
-            print(tilt_angle)
-
-            set_servo_angle(PAN_SERVO_ID, pan_angle, 2)
-            #set_servo_angle(TILT_SERVO_ID, tilt_angle, 2)
+        set_servo_angle(PAN_SERVO_ID, pan_angle, 2)
+        #set_servo_angle(TILT_SERVO_ID, tilt_angle, 2)
 
 
-            # Aguardar um curto período antes de receber novos comandos
-            time.sleep(0.1)
+        # Aguardar um curto período antes de receber novos comandos
+        time.sleep(0.1)
     except KeyboardInterrupt:
         # Colocar os servos em posição de standby
-        #set_servo_angle(PAN_SERVO_ID, PAN_STANDBY_ANGLE, 5)1
-        #set_servo_angle(TILT_SERVO_ID, TILT_STANDBY_ANGLE, 5)
+        set_servo_angle(PAN_SERVO_ID, PAN_STANDBY_ANGLE, 5)
+        set_servo_angle(TILT_SERVO_ID, TILT_STANDBY_ANGLE, 5)
         print("\nEncerrando o controle de Pan e Tilt.")
 
     # 4) (Opcional) Baixar a imagem e desenhar TAMBÉM os bounding boxes
