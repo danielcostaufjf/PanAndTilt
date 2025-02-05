@@ -16,7 +16,8 @@ TILT_SERVO_ID = 2
 
 # default angles
 PAN_STANDBY_ANGLE = 145
-TILT_STANDBY_ANGLE = 150
+#TILT_STANDBY_ANGLE = 150
+TILT_STANDBY_ANGLE = servo_bus.pos_read(2)
 
 # faixa de valores aceitavel
 PAN_VALUES = 90
@@ -29,7 +30,7 @@ TILT_MIN_ANGLE = TILT_STANDBY_ANGLE - TIL_VALUES
 TILT_MAX_ANGLE = TILT_STANDBY_ANGLE + TIL_VALUES
 
 PAN_PIXELS = 1280   # Largura da imagem em pixels
-TILT_PIXELS = 720  # Altura da imagem em pixels
+TILT_PIXELS = 720   # Altura da imagem em pixels
 PAN_FOV = 120       # Campo de visão horizontal em graus
 TILT_FOV = 60       # Campo de visão vertical em graus
 
@@ -48,7 +49,6 @@ def set_servo_angle(servo_id, angle, duration):
         print(f"Erro: Ângulo {angle} fora do limite permitido (0-240 graus).")
 
 
-
 def main():
     set_servo_angle(PAN_SERVO_ID, PAN_STANDBY_ANGLE, 5)
     set_servo_angle(TILT_SERVO_ID, TILT_STANDBY_ANGLE, 5)
@@ -63,7 +63,6 @@ def main():
             r_pos = requests.get(f"{base_url}/pos", timeout=10)
             r_pos.raise_for_status()
             bboxes = r_pos.json()  # lista de dicts
-            #print(i)
 
         except Exception as e:
             print(f"Erro ao obter /pos: {e}")
